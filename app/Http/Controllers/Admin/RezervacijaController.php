@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-
 use App\Models\Stol;
 use App\Models\Rezervacija;
 use Illuminate\Http\Request;
@@ -23,10 +22,13 @@ class RezervacijaController extends Controller
 
     public function dodajRezervaciju(Request $request)
     {
-        /* $stol = Stol::findOrFail($request->stol_id);
-        if ($request->broj_gostiju > $stol->broj_gostiju) {
-            return back()->with('warning', 'Ovaj stol nema toliko sjedećih mjesta');
-        }*/
+
+
+        $stol = Stol::findOrFail($request->stol_id);
+        /*if ($request->broj_gostiju > $stol->broj_gostiju) {
+            error_log('do something');
+        };*/
+        $stol->status = 'Nedostupan';
 
         $rezervacija = new Rezervacija();
         $rezervacija->ime = $request->ime;
@@ -35,9 +37,10 @@ class RezervacijaController extends Controller
         $rezervacija->broj_telefona = $request->broj_telefona;
         $rezervacija->datum_rezervacije = $request->datum_rezervacije;
         $rezervacija->broj_gostiju = $request->broj_gostiju;
-        $rezervacija->stol_id = $request->stol;
+        $rezervacija->stol_id = $request->stol_id;
 
         $rezervacija->save();
+        $stol->save();
     }
 
     public function urediRezervaciju(Request $request, $id)
@@ -55,9 +58,16 @@ class RezervacijaController extends Controller
         return $rezervacija;
     }
 
-    public function izbrisiRezervaciju($id)
+    public function izbrisiRezervaciju(Request $request, $id)
     {
+
         $rezervacija = Rezervacija::find($id);
+
+        $stol = Stol::findOrFail($request->stol);
+        $stol->status = 'Dostupan';
+
+        $stol->save();
+
         $rezervacija->delete();
     }
 }

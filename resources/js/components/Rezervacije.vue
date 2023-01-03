@@ -53,7 +53,7 @@
                                 </button>
                                 <button
                                     class="btn btn-sm btn-danger"
-                                    @click="izbrisiRezervaciju(rezervacija.id)"
+                                    @click="izbrisiRezervaciju(rezervacija)"
                                 >
                                     <i class="fa fa-trash"></i> Izbriši
                                 </button>
@@ -189,12 +189,17 @@ export default {
         stolovi: [],
         loading: false,
         form: {
+            id: "",
             ime: "",
             prezime: "",
             email: "",
             broj_telefona: "",
             datum_rezervacije: "",
             broj_gostiju: "",
+            stol: "",
+        },
+        brisiRezervaciju: {
+            id: "",
             stol: "",
         },
         rezervacijaError: {
@@ -224,7 +229,7 @@ export default {
         },
         dohvatiStolove() {
             axios
-                .get("http://127.0.0.1:8000/stolovi")
+                .get("http://127.0.0.1:8000/slobodniStolovi")
                 .then((response) => {
                     this.stolovi = response.data.stolovi;
                 })
@@ -293,9 +298,17 @@ export default {
                     });
             }
         },
-        izbrisiRezervaciju(id) {
+        izbrisiRezervaciju(rezervacija) {
+            this.brisiRezervaciju = {
+                id: rezervacija.id,
+                stol: rezervacija.stol_id,
+            };
             axios
-                .get("http://127.0.0.1:8000/admin/rezervacije/izbrisi/" + id)
+                .post(
+                    "http://127.0.0.1:8000/admin/rezervacije/izbrisi/" +
+                        this.brisiRezervaciju.id,
+                    this.brisiRezervaciju
+                )
                 .then((response) => {
                     this.dohvatiRezervacije();
                 })

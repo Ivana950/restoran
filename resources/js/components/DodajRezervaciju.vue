@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-alert v-if="rezervacijaDodana" type="success">
-            Meni uspješno dodan!
+            Rezervacija uspješno dodana!
         </v-alert>
         <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
@@ -31,6 +31,11 @@
             ></v-text-field>
 
             <input type="datetime-local" v-model="form.datum_rezervacije" />
+            <span
+                class="text-danger"
+                v-show="rezervacijaError.datum_rezervacije"
+                >Izaberite datum i vrijeme rezervacije!</span
+            >
 
             <v-text-field
                 id="broj_gostiju"
@@ -43,11 +48,12 @@
             <select
                 id="stol_id"
                 name="stol_id"
-                v-model="form.stol"
+                v-model="form.stol_id"
                 class="form-select"
                 aria-label="Default select example"
             >
-                <option v-for="stol in stolovi" :key="stol.id" value="stol_id">
+                <option selected value="">Odaberite stol</option>
+                <option v-for="stol in stolovi" :key="stol.id" :value="stol.id">
                     {{ stol.naziv }} ({{ stol.broj_gostiju }})
                 </option>
             </select>
@@ -88,10 +94,6 @@ export default {
             (v) => !!v || "Unesite broj telefona!",
             (v) => (v && v.length <= 20) || "Maksimalno 20 brojeva",
         ],
-        dateRules: [
-            (v) => !!v || "Izaberite datum!",
-            (v) => (v && v.length <= 20) || "Maksimalno 20 slova",
-        ],
         form: {
             ime: "",
             prezime: "",
@@ -99,30 +101,37 @@ export default {
             broj_telefona: "",
             datum_rezervacije: "",
             broj_gostiju: "",
-            stol: "",
+            stol_id: "",
         },
         stolovi: [],
         rezervacijaDodana: false,
+        rezervacijaError: {
+            datum_rezervacije: false,
+        },
     }),
     methods: {
         validate() {
-            this.$refs.form.validate();
-            axios
-                .post(
-                    "http://127.0.0.1:8000/admin/rezervacije/dodaj",
-                    this.form
-                )
-                .then(() => {
-                    this.rezervacijaDodana = true;
-                    console.log("rezervacija dodana");
-                })
-                .catch((e) => {
-                    console.log("Nešto pošlo krivo! Greška=" + e);
-                });
+            this.form.datum_rezervacije == ""
+                ? (this.rezervacijaError.datum_rezervacije = true)
+                : (this.rezervacijaError.datum_rezervacije = false);
+            if (this.$refs.form.validate() && this.form.datum_rezervacije) {
+                axios
+                    .post(
+                        "http://127.0.0.1:8000/admin/rezervacije/dodaj",
+                        this.form
+                    )
+                    .then(() => {
+                        this.rezervacijaDodana = true;
+                        console.log("rezervacija dodana");
+                    })
+                    .catch((e) => {
+                        console.log("Nešto pošlo krivo! Greška=" + e);
+                    });
+            }
         },
         dohvatiStolove() {
             axios
-                .get("http://127.0.0.1:8000/stolovi")
+                .get("http://127.0.0.1:8000/slobodniStolovi")
                 .then((response) => {
                     this.stolovi = response.data.stolovi;
                 })

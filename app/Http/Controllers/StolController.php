@@ -18,6 +18,14 @@ class StolController extends Controller
             'stolovi' => $stolovi
         ]);
     }
+    public function dohvatiSlobodneStolove()
+    {
+        $stolovi = Stol::where('status', '=', 'dostupan')->get();
+
+        return response()->json([
+            'stolovi' => $stolovi
+        ]);
+    }
 
     public function index()
     {

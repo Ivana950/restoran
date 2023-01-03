@@ -29,7 +29,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'as' => 'admin.', 'mi
     // REZERVACIJE
     Route::get('/rezervacije', 'RezervacijaController@rezervacije')->name('rezervacije.index');
     Route::get('/rezervacije/dodaj', 'RezervacijaController@novaRezervacija')->name('rezervacije.dodaj');
-    Route::get('/rezervacije/izbrisi/{id}', 'RezervacijaController@izbrisiRezervaciju')->name('rezervacije.izbrisi');
+    Route::post('/rezervacije/izbrisi/{id}', 'RezervacijaController@izbrisiRezervaciju')->name('rezervacije.izbrisi');
     Route::post('/rezervacije/uredi/{id}', 'RezervacijaController@urediRezervaciju')->name('rezervacije.urediRezervaciju');
     Route::post('/rezervacije/dodaj', 'RezervacijaController@dodajRezervaciju')->name('rezervacije.dodajRezervaciju');
 });
@@ -39,6 +39,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'User', 'as' => 'user.', 'middl
 });
 
 Route::get('/stolovi', 'StolController@dohvatiStolove');
+Route::get('/slobodniStolovi', 'StolController@dohvatiSlobodneStolove');
 Route::get('/meni', 'MeniController@dohvatiMeni');
 Route::get('/rezervacije', 'RezervacijaController@dohvatiRezervacije');
 

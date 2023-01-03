@@ -17,12 +17,12 @@
             <span class="text-danger" v-show="stolError.broj_gostiju"
                 >Ispunite ovo polje!</span
             >
-
             <v-select
                 placeholder="Status"
                 v-model="form.status"
                 :options="status"
             ></v-select>
+
             <span class="text-danger" v-show="stolError.status">Obavezno</span>
         </v-form>
         <v-btn @click="dodajStol()">Dodaj</v-btn>

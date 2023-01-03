@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rezervacija;
-
+use App\Models\Stol;
 
 class RezervacijaController extends Controller
 {

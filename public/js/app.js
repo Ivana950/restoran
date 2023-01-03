@@ -5476,6 +5476,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   created: function created() {
@@ -5504,11 +5510,6 @@ __webpack_require__.r(__webpack_exports__);
       }, function (v) {
         return v && v.length <= 20 || "Maksimalno 20 brojeva";
       }],
-      dateRules: [function (v) {
-        return !!v || "Izaberite datum!";
-      }, function (v) {
-        return v && v.length <= 20 || "Maksimalno 20 slova";
-      }],
       form: {
         ime: "",
         prezime: "",
@@ -5516,26 +5517,31 @@ __webpack_require__.r(__webpack_exports__);
         broj_telefona: "",
         datum_rezervacije: "",
         broj_gostiju: "",
-        stol: ""
+        stol_id: ""
       },
       stolovi: [],
-      rezervacijaDodana: false
+      rezervacijaDodana: false,
+      rezervacijaError: {
+        datum_rezervacije: false
+      }
     };
   },
   methods: {
     validate: function validate() {
       var _this = this;
-      this.$refs.form.validate();
-      axios.post("http://127.0.0.1:8000/admin/rezervacije/dodaj", this.form).then(function () {
-        _this.rezervacijaDodana = true;
-        console.log("rezervacija dodana");
-      })["catch"](function (e) {
-        console.log("Nešto pošlo krivo! Greška=" + e);
-      });
+      this.form.datum_rezervacije == "" ? this.rezervacijaError.datum_rezervacije = true : this.rezervacijaError.datum_rezervacije = false;
+      if (this.$refs.form.validate() && this.form.datum_rezervacije) {
+        axios.post("http://127.0.0.1:8000/admin/rezervacije/dodaj", this.form).then(function () {
+          _this.rezervacijaDodana = true;
+          console.log("rezervacija dodana");
+        })["catch"](function (e) {
+          console.log("Nešto pošlo krivo! Greška=" + e);
+        });
+      }
     },
     dohvatiStolove: function dohvatiStolove() {
       var _this2 = this;
-      axios.get("http://127.0.0.1:8000/stolovi").then(function (response) {
+      axios.get("http://127.0.0.1:8000/slobodniStolovi").then(function (response) {
         _this2.stolovi = response.data.stolovi;
       })["catch"](function (e) {
         console.log("Nešto pošlo krivo! Greška=" + e);
@@ -6088,12 +6094,17 @@ __webpack_require__.r(__webpack_exports__);
       stolovi: [],
       loading: false,
       form: {
+        id: "",
         ime: "",
         prezime: "",
         email: "",
         broj_telefona: "",
         datum_rezervacije: "",
         broj_gostiju: "",
+        stol: ""
+      },
+      brisiRezervaciju: {
+        id: "",
         stol: ""
       },
       rezervacijaError: {
@@ -6122,7 +6133,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     dohvatiStolove: function dohvatiStolove() {
       var _this2 = this;
-      axios.get("http://127.0.0.1:8000/stolovi").then(function (response) {
+      axios.get("http://127.0.0.1:8000/slobodniStolovi").then(function (response) {
         _this2.stolovi = response.data.stolovi;
       })["catch"](function (e) {
         console.log("Nešto pošlo krivo! Greška=" + e);
@@ -6160,9 +6171,13 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
-    izbrisiRezervaciju: function izbrisiRezervaciju(id) {
+    izbrisiRezervaciju: function izbrisiRezervaciju(rezervacija) {
       var _this4 = this;
-      axios.get("http://127.0.0.1:8000/admin/rezervacije/izbrisi/" + id).then(function (response) {
+      this.brisiRezervaciju = {
+        id: rezervacija.id,
+        stol: rezervacija.stol_id
+      };
+      axios.post("http://127.0.0.1:8000/admin/rezervacije/izbrisi/" + this.brisiRezervaciju.id, this.brisiRezervaciju).then(function (response) {
         _this4.dohvatiRezervacije();
       })["catch"](function (e) {
         console.log("Nešto pošlo krivo! Greška=" + e);
@@ -6389,14 +6404,15 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuetify */ "./node_modules/vuetify/dist/vuetify.js");
-/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vuetify__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vuetify */ "./node_modules/vuetify/dist/vuetify.js");
+/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(vuetify__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuetify/dist/vuetify.min.css */ "./node_modules/vuetify/dist/vuetify.min.css");
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-select */ "./node_modules/vue-select/dist/vue-select.js");
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-select/dist/vue-select.css */ "./node_modules/vue-select/dist/vue-select.css");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var vuetify_datetime_picker__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuetify-datetime-picker */ "./node_modules/vuetify-datetime-picker/src/index.js");
+/* harmony import */ var vue_enums__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-enums */ "./node_modules/vue-enums/src/index.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
@@ -6404,19 +6420,21 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 
+
 window.Vue = (__webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js")["default"]);
-vue__WEBPACK_IMPORTED_MODULE_4__["default"].use((vuetify__WEBPACK_IMPORTED_MODULE_5___default()));
-vue__WEBPACK_IMPORTED_MODULE_4__["default"].use(vuetify_datetime_picker__WEBPACK_IMPORTED_MODULE_3__["default"]);
-vue__WEBPACK_IMPORTED_MODULE_4__["default"].component('stolovi', (__webpack_require__(/*! ./components/Stolovi.vue */ "./resources/js/components/Stolovi.vue")["default"]));
-vue__WEBPACK_IMPORTED_MODULE_4__["default"].component('dodaj-stol', (__webpack_require__(/*! ./components/DodajStol.vue */ "./resources/js/components/DodajStol.vue")["default"]));
-vue__WEBPACK_IMPORTED_MODULE_4__["default"].component('meni', (__webpack_require__(/*! ./components/Meni.vue */ "./resources/js/components/Meni.vue")["default"]));
-vue__WEBPACK_IMPORTED_MODULE_4__["default"].component('dodaj-meni', (__webpack_require__(/*! ./components/DodajMeni.vue */ "./resources/js/components/DodajMeni.vue")["default"]));
-vue__WEBPACK_IMPORTED_MODULE_4__["default"].component('rezervacije', (__webpack_require__(/*! ./components/Rezervacije.vue */ "./resources/js/components/Rezervacije.vue")["default"]));
-vue__WEBPACK_IMPORTED_MODULE_4__["default"].component('dodaj-rezervaciju', (__webpack_require__(/*! ./components/DodajRezervaciju.vue */ "./resources/js/components/DodajRezervaciju.vue")["default"]));
-vue__WEBPACK_IMPORTED_MODULE_4__["default"].component('loading', (__webpack_require__(/*! ./components/Loading.vue */ "./resources/js/components/Loading.vue")["default"]));
-vue__WEBPACK_IMPORTED_MODULE_4__["default"].component('v-select', (vue_select__WEBPACK_IMPORTED_MODULE_1___default()));
-var app = new vue__WEBPACK_IMPORTED_MODULE_4__["default"]({
-  vuetify: new (vuetify__WEBPACK_IMPORTED_MODULE_5___default())(),
+vue__WEBPACK_IMPORTED_MODULE_5__["default"].use((vuetify__WEBPACK_IMPORTED_MODULE_6___default()));
+vue__WEBPACK_IMPORTED_MODULE_5__["default"].use(vuetify_datetime_picker__WEBPACK_IMPORTED_MODULE_3__["default"]);
+vue__WEBPACK_IMPORTED_MODULE_5__["default"].use(vue_enums__WEBPACK_IMPORTED_MODULE_4__["default"]);
+vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('stolovi', (__webpack_require__(/*! ./components/Stolovi.vue */ "./resources/js/components/Stolovi.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('dodaj-stol', (__webpack_require__(/*! ./components/DodajStol.vue */ "./resources/js/components/DodajStol.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('meni', (__webpack_require__(/*! ./components/Meni.vue */ "./resources/js/components/Meni.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('dodaj-meni', (__webpack_require__(/*! ./components/DodajMeni.vue */ "./resources/js/components/DodajMeni.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('rezervacije', (__webpack_require__(/*! ./components/Rezervacije.vue */ "./resources/js/components/Rezervacije.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('dodaj-rezervaciju', (__webpack_require__(/*! ./components/DodajRezervaciju.vue */ "./resources/js/components/DodajRezervaciju.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('loading', (__webpack_require__(/*! ./components/Loading.vue */ "./resources/js/components/Loading.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('v-select', (vue_select__WEBPACK_IMPORTED_MODULE_1___default()));
+var app = new vue__WEBPACK_IMPORTED_MODULE_5__["default"]({
+  vuetify: new (vuetify__WEBPACK_IMPORTED_MODULE_6___default())(),
   el: '#app'
 });
 
@@ -37558,6 +37576,39 @@ module.exports = function (list, options) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-enums/src/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/vue-enums/src/index.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ enums)
+/* harmony export */ });
+function enums (Vue, options = {}) {
+  const { namespace } = options
+  Vue.mixin({
+    created () {
+      const enums = this.$options.enums
+      if (enums) {
+        let target = this
+        if (namespace) {
+          this[namespace] = {}
+          target = this[namespace]
+        }
+        Object.keys(enums).forEach(name => {
+          target[name] = Object.freeze(enums[name])
+        })
+      }
+    }
+  })
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/vuetify-datetime-picker/src/components/DatetimePicker.vue":
 /*!********************************************************************************!*\
   !*** ./node_modules/vuetify-datetime-picker/src/components/DatetimePicker.vue ***!
@@ -38773,7 +38824,7 @@ var render = function () {
     [
       _vm.rezervacijaDodana
         ? _c("v-alert", { attrs: { type: "success" } }, [
-            _vm._v("\n        Meni uspješno dodan!\n    "),
+            _vm._v("\n        Rezervacija uspješno dodana!\n    "),
           ])
         : _vm._e(),
       _vm._v(" "),
@@ -38861,6 +38912,22 @@ var render = function () {
             },
           }),
           _vm._v(" "),
+          _c(
+            "span",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.rezervacijaError.datum_rezervacije,
+                  expression: "rezervacijaError.datum_rezervacije",
+                },
+              ],
+              staticClass: "text-danger",
+            },
+            [_vm._v("Izaberite datum i vrijeme rezervacije!")]
+          ),
+          _vm._v(" "),
           _c("v-text-field", {
             attrs: {
               id: "broj_gostiju",
@@ -38884,8 +38951,8 @@ var render = function () {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.form.stol,
-                  expression: "form.stol",
+                  value: _vm.form.stol_id,
+                  expression: "form.stol_id",
                 },
               ],
               staticClass: "form-select",
@@ -38906,28 +38973,34 @@ var render = function () {
                     })
                   _vm.$set(
                     _vm.form,
-                    "stol",
+                    "stol_id",
                     $event.target.multiple ? $$selectedVal : $$selectedVal[0]
                   )
                 },
               },
             },
-            _vm._l(_vm.stolovi, function (stol) {
-              return _c(
-                "option",
-                { key: stol.id, attrs: { value: "stol_id" } },
-                [
-                  _vm._v(
-                    "\n                " +
-                      _vm._s(stol.naziv) +
-                      " (" +
-                      _vm._s(stol.broj_gostiju) +
-                      ")\n            "
-                  ),
-                ]
-              )
-            }),
-            0
+            [
+              _c("option", { attrs: { selected: "", value: "" } }, [
+                _vm._v("Odaberite stol"),
+              ]),
+              _vm._v(" "),
+              _vm._l(_vm.stolovi, function (stol) {
+                return _c(
+                  "option",
+                  { key: stol.id, domProps: { value: stol.id } },
+                  [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(stol.naziv) +
+                        " (" +
+                        _vm._s(stol.broj_gostiju) +
+                        ")\n            "
+                    ),
+                  ]
+                )
+              }),
+            ],
+            2
           ),
           _vm._v(" "),
           _c("br"),
@@ -39563,7 +39636,7 @@ var render = function () {
                         staticClass: "btn btn-sm btn-danger",
                         on: {
                           click: function ($event) {
-                            return _vm.izbrisiRezervaciju(rezervacija.id)
+                            return _vm.izbrisiRezervaciju(rezervacija)
                           },
                         },
                       },
