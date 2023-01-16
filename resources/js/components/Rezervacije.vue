@@ -1,5 +1,8 @@
 <template>
     <div>
+        <v-alert v-if="rezervacijaIzbrisana" type="success">
+            Rezervacija uspješno izbrisana!
+        </v-alert>
         <div>
             <div class="card-body table-responsive p-0">
                 <table class="table">
@@ -212,7 +215,7 @@ export default {
             stol: false,
         },
         rezervacijaSpremljena: false,
-        rezervacijaIzbrisan: false,
+        rezervacijaIzbrisana: false,
     }),
     methods: {
         dohvatiRezervacije() {
@@ -309,7 +312,11 @@ export default {
                         this.brisiRezervaciju.id,
                     this.brisiRezervaciju
                 )
-                .then((response) => {
+                .then(() => {
+                    this.rezervacijaIzbrisana = true;
+                    setTimeout(() => {
+                        this.rezervacijaIzbrisana = false;
+                    }, 4000);
                     this.dohvatiRezervacije();
                 })
                 .catch((e) => {

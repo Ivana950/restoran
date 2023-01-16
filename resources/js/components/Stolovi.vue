@@ -186,6 +186,9 @@ export default {
                     )
                     .then(() => {
                         this.stolSpremljen = true;
+                        setTimeout(() => {
+                            this.stolSpremljen = false;
+                        }, 7000);
                         this.dohvatiStolove();
                         console.log("Stol je dodan!");
                     })
@@ -197,7 +200,7 @@ export default {
         izbrisiStol(id) {
             axios
                 .get("http://127.0.0.1:8000/admin/stolovi/izbrisi/" + id)
-                .then((response) => {
+                .then(() => {
                     this.dohvatiStolove();
                     this.stolIzbrisan = true;
                 })

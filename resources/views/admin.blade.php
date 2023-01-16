@@ -26,6 +26,8 @@
         <v-col cols="8">
             @yield('sadrzaj')
         </v-col>
+
+
     </v-row>
 
 </body>

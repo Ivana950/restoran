@@ -5387,11 +5387,21 @@ __webpack_require__.r(__webpack_exports__);
       if (this.form.naziv && this.form.opis && this.form.cijena) {
         axios.post("http://127.0.0.1:8000/admin/meni/dodaj", this.form).then(function (response) {
           _this2.meniDodan = true;
+          setTimeout(function () {
+            _this2.meniDodan = false;
+            _this2.clearForm();
+          }, 7000);
           console.log(response.data);
         })["catch"](function (e) {
           console.log("Nešto pošlo krivo! Greška=" + e);
         });
       }
+    },
+    clearForm: function clearForm() {
+      this.form.naziv = "";
+      this.form.opis = "";
+      this.form.cijena = "";
+      this.form.slika = "";
     }
   }
 });
@@ -5482,6 +5492,38 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   created: function created() {
@@ -5489,27 +5531,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      valid: true,
-      nameRules: [function (v) {
-        return !!v || "Unesite ime!";
-      }, function (v) {
-        return v && v.length <= 20 || "Maksimalno 20 slova";
-      }],
-      lastNameRules: [function (v) {
-        return !!v || "Unesite prezime!";
-      }, function (v) {
-        return v && v.length <= 20 || "Maksimalno 20 slova";
-      }],
-      emailRules: [function (v) {
-        return !!v || "Unesite e-mail";
-      }, function (v) {
-        return /.+@.+\..+/.test(v) || "Neispravni podaci";
-      }],
-      telephoneRules: [function (v) {
-        return !!v || "Unesite broj telefona!";
-      }, function (v) {
-        return v && v.length <= 20 || "Maksimalno 20 brojeva";
-      }],
       form: {
         ime: "",
         prezime: "",
@@ -5521,23 +5542,39 @@ __webpack_require__.r(__webpack_exports__);
       },
       stolovi: [],
       rezervacijaDodana: false,
-      rezervacijaError: {
-        datum_rezervacije: false
-      }
+      errors: {}
     };
   },
   methods: {
-    validate: function validate() {
+    dodajRezervaciju: function dodajRezervaciju() {
       var _this = this;
-      this.form.datum_rezervacije == "" ? this.rezervacijaError.datum_rezervacije = true : this.rezervacijaError.datum_rezervacije = false;
-      if (this.$refs.form.validate() && this.form.datum_rezervacije) {
-        axios.post("http://127.0.0.1:8000/admin/rezervacije/dodaj", this.form).then(function () {
-          _this.rezervacijaDodana = true;
-          console.log("rezervacija dodana");
-        })["catch"](function (e) {
+      axios.post("http://127.0.0.1:8000/admin/rezervacije/dodaj", this.form).then(function () {
+        _this.rezervacijaDodana = true;
+        setTimeout(function () {
+          _this.rezervacijaDodana = false;
+          _this.clearForm();
+        }, 7000);
+        _this.dohvatiStolove();
+        console.log("rezervacija dodana");
+      })["catch"](function (e) {
+        if (e.response.status == 422) {
+          _this.setErrors(e.response.data.errors);
+        } else {
           console.log("Nešto pošlo krivo! Greška=" + e);
-        });
-      }
+        }
+      });
+    },
+    setErrors: function setErrors(errors) {
+      this.errors = errors;
+    },
+    hasError: function hasError(fieldName) {
+      return fieldName in this.errors;
+    },
+    getError: function getError(fieldName) {
+      return this.errors[fieldName][0];
+    },
+    clearError: function clearError(event) {
+      delete this.errors[event.target.name];
     },
     dohvatiStolove: function dohvatiStolove() {
       var _this2 = this;
@@ -5546,6 +5583,15 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (e) {
         console.log("Nešto pošlo krivo! Greška=" + e);
       });
+    },
+    clearForm: function clearForm() {
+      this.form.ime = "";
+      this.form.prezime = "";
+      this.form.email = "";
+      this.form.broj_telefona = "";
+      this.form.datum_rezervacije = "";
+      this.form.broj_gostiju = "";
+      this.form.stol_id = "";
     }
   }
 });
@@ -5621,11 +5667,20 @@ __webpack_require__.r(__webpack_exports__);
       if (this.form.naziv && this.form.broj_gostiju && this.form.status) {
         axios.post("http://127.0.0.1:8000/admin/stolovi/dodaj", this.form).then(function () {
           _this.stolDodan = true;
+          setTimeout(function () {
+            _this.stolDodan = false;
+            _this.clearForm();
+          }, 7000);
           console.log("stol dodan");
         })["catch"](function (e) {
           console.log("Nešto pošlo krivo! Greška=" + e);
         });
       }
+    },
+    clearForm: function clearForm() {
+      this.form.naziv = "";
+      this.form.broj_gostiju = "";
+      this.form.status = "";
     }
   }
 });
@@ -5672,6 +5727,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
+//
+//
 //
 //
 //
@@ -5880,8 +5938,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     izbrisiMeni: function izbrisiMeni(id) {
       var _this4 = this;
-      axios.get("http://127.0.0.1:8000/admin/meni/izbrisi/" + id).then(function (response) {
+      axios.get("http://127.0.0.1:8000/admin/meni/izbrisi/" + id).then(function () {
         _this4.dohvatiMenije();
+        _this4.meniIzbrisan = true;
+        setTimeout(function () {
+          _this4.meniIzbrisan = false;
+        }, 4000);
       })["catch"](function (e) {
         console.log("Nešto pošlo krivo! Greška=" + e);
       });
@@ -5902,6 +5964,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
+//
+//
 //
 //
 //
@@ -6117,7 +6182,7 @@ __webpack_require__.r(__webpack_exports__);
         stol: false
       },
       rezervacijaSpremljena: false,
-      rezervacijaIzbrisan: false
+      rezervacijaIzbrisana: false
     };
   },
   methods: {
@@ -6177,7 +6242,11 @@ __webpack_require__.r(__webpack_exports__);
         id: rezervacija.id,
         stol: rezervacija.stol_id
       };
-      axios.post("http://127.0.0.1:8000/admin/rezervacije/izbrisi/" + this.brisiRezervaciju.id, this.brisiRezervaciju).then(function (response) {
+      axios.post("http://127.0.0.1:8000/admin/rezervacije/izbrisi/" + this.brisiRezervaciju.id, this.brisiRezervaciju).then(function () {
+        _this4.rezervacijaIzbrisana = true;
+        setTimeout(function () {
+          _this4.rezervacijaIzbrisana = false;
+        }, 4000);
         _this4.dohvatiRezervacije();
       })["catch"](function (e) {
         console.log("Nešto pošlo krivo! Greška=" + e);
@@ -6375,6 +6444,9 @@ __webpack_require__.r(__webpack_exports__);
       if (this.form.naziv && this.form.broj_gostiju && this.form.status) {
         axios.post("http://127.0.0.1:8000/admin/stolovi/uredi/" + this.form.id, this.form).then(function () {
           _this2.stolSpremljen = true;
+          setTimeout(function () {
+            _this2.stolSpremljen = false;
+          }, 7000);
           _this2.dohvatiStolove();
           console.log("Stol je dodan!");
         })["catch"](function (e) {
@@ -6384,7 +6456,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     izbrisiStol: function izbrisiStol(id) {
       var _this3 = this;
-      axios.get("http://127.0.0.1:8000/admin/stolovi/izbrisi/" + id).then(function (response) {
+      axios.get("http://127.0.0.1:8000/admin/stolovi/izbrisi/" + id).then(function () {
         _this3.dohvatiStolove();
         _this3.stolIzbrisan = true;
       })["catch"](function (err) {
@@ -38829,67 +38901,153 @@ var render = function () {
         : _vm._e(),
       _vm._v(" "),
       _c(
-        "v-form",
-        {
-          ref: "form",
-          attrs: { "lazy-validation": "" },
-          model: {
-            value: _vm.valid,
-            callback: function ($$v) {
-              _vm.valid = $$v
-            },
-            expression: "valid",
-          },
-        },
+        "form",
+        { on: { keydown: _vm.clearError } },
         [
-          _c("v-text-field", {
-            attrs: { label: "Ime", rules: _vm.nameRules, required: "" },
-            model: {
-              value: _vm.form.ime,
-              callback: function ($$v) {
-                _vm.$set(_vm.form, "ime", $$v)
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.form.ime,
+                expression: "form.ime",
               },
-              expression: "form.ime",
+            ],
+            staticClass: "form-control",
+            class: _vm.hasError("ime") ? "is-invalid" : "",
+            attrs: { id: "ime", name: "ime", placeholder: "Ime", type: "text" },
+            domProps: { value: _vm.form.ime },
+            on: {
+              input: function ($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.form, "ime", $event.target.value)
+              },
             },
           }),
           _vm._v(" "),
-          _c("v-text-field", {
-            attrs: { label: "Prezime", rules: _vm.lastNameRules, required: "" },
-            model: {
-              value: _vm.form.prezime,
-              callback: function ($$v) {
-                _vm.$set(_vm.form, "prezime", $$v)
-              },
-              expression: "form.prezime",
-            },
-          }),
+          _vm.hasError("ime")
+            ? _c("div", { staticClass: "invalid-feedback" }, [
+                _vm._v(
+                  "\n            " + _vm._s(_vm.getError("ime")) + "\n        "
+                ),
+              ])
+            : _vm._e(),
           _vm._v(" "),
-          _c("v-text-field", {
-            attrs: { label: "Email", rules: _vm.emailRules, required: "" },
-            model: {
-              value: _vm.form.email,
-              callback: function ($$v) {
-                _vm.$set(_vm.form, "email", $$v)
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.form.prezime,
+                expression: "form.prezime",
               },
-              expression: "form.email",
-            },
-          }),
-          _vm._v(" "),
-          _c("v-text-field", {
+            ],
+            staticClass: "form-control",
+            class: _vm.hasError("prezime") ? "is-invalid" : "",
             attrs: {
-              type: "integer",
-              label: "Broj telefona",
-              rules: _vm.telephoneRules,
-              required: "",
+              id: "prezime",
+              name: "prezime",
+              placeholder: "Prezime",
+              type: "text",
             },
-            model: {
-              value: _vm.form.broj_telefona,
-              callback: function ($$v) {
-                _vm.$set(_vm.form, "broj_telefona", $$v)
+            domProps: { value: _vm.form.prezime },
+            on: {
+              input: function ($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.form, "prezime", $event.target.value)
               },
-              expression: "form.broj_telefona",
             },
           }),
+          _vm._v(" "),
+          _vm.hasError("prezime")
+            ? _c("div", { staticClass: "invalid-feedback" }, [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(_vm.getError("prezime")) +
+                    "\n        "
+                ),
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.form.email,
+                expression: "form.email",
+              },
+            ],
+            staticClass: "form-control",
+            class: _vm.hasError("email") ? "is-invalid" : "",
+            attrs: {
+              id: "email",
+              name: "email",
+              placeholder: "Email",
+              type: "email",
+            },
+            domProps: { value: _vm.form.email },
+            on: {
+              input: function ($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.form, "email", $event.target.value)
+              },
+            },
+          }),
+          _vm._v(" "),
+          _vm.hasError("email")
+            ? _c("div", { staticClass: "invalid-feedback" }, [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(_vm.getError("email")) +
+                    "\n        "
+                ),
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.form.broj_telefona,
+                expression: "form.broj_telefona",
+              },
+            ],
+            staticClass: "form-control",
+            class: _vm.hasError("broj_telefona") ? "is-invalid" : "",
+            attrs: {
+              id: "broj_telefona",
+              name: "broj_telefona",
+              placeholder: "Broj telefona",
+              type: "integer",
+            },
+            domProps: { value: _vm.form.broj_telefona },
+            on: {
+              input: function ($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.form, "broj_telefona", $event.target.value)
+              },
+            },
+          }),
+          _vm._v(" "),
+          _vm.hasError("broj_telefona")
+            ? _c("div", { staticClass: "invalid-feedback" }, [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(_vm.getError("broj_telefona")) +
+                    "\n        "
+                ),
+              ])
+            : _vm._e(),
           _vm._v(" "),
           _c("input", {
             directives: [
@@ -38900,7 +39058,13 @@ var render = function () {
                 expression: "form.datum_rezervacije",
               },
             ],
-            attrs: { type: "datetime-local" },
+            staticClass: "form-control",
+            class: _vm.hasError("datum_rezervacije") ? "is-invalid" : "",
+            attrs: {
+              id: "datum_rezervacije",
+              name: "datum_rezervacije",
+              type: "datetime-local",
+            },
             domProps: { value: _vm.form.datum_rezervacije },
             on: {
               input: function ($event) {
@@ -38912,37 +39076,53 @@ var render = function () {
             },
           }),
           _vm._v(" "),
-          _c(
-            "span",
-            {
-              directives: [
-                {
-                  name: "show",
-                  rawName: "v-show",
-                  value: _vm.rezervacijaError.datum_rezervacije,
-                  expression: "rezervacijaError.datum_rezervacije",
-                },
-              ],
-              staticClass: "text-danger",
-            },
-            [_vm._v("Izaberite datum i vrijeme rezervacije!")]
-          ),
+          _vm.hasError("datum_rezervacije")
+            ? _c("div", { staticClass: "invalid-feedback" }, [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(_vm.getError("datum_rezervacije")) +
+                    "\n        "
+                ),
+              ])
+            : _vm._e(),
           _vm._v(" "),
-          _c("v-text-field", {
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.form.broj_gostiju,
+                expression: "form.broj_gostiju",
+              },
+            ],
+            staticClass: "form-control",
+            class: _vm.hasError("broj_gostiju") ? "is-invalid" : "",
             attrs: {
               id: "broj_gostiju",
               name: "broj_gostiju",
-              label: "Broj gostiju",
+              placeholder: "Broj gostiju",
               type: "integer",
             },
-            model: {
-              value: _vm.form.broj_gostiju,
-              callback: function ($$v) {
-                _vm.$set(_vm.form, "broj_gostiju", $$v)
+            domProps: { value: _vm.form.broj_gostiju },
+            on: {
+              input: function ($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.form, "broj_gostiju", $event.target.value)
               },
-              expression: "form.broj_gostiju",
             },
           }),
+          _vm._v(" "),
+          _vm.hasError("broj_gostiju")
+            ? _c("div", { staticClass: "invalid-feedback" }, [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(_vm.getError("broj_gostiju")) +
+                    "\n        "
+                ),
+              ])
+            : _vm._e(),
           _vm._v(" "),
           _c(
             "select",
@@ -38956,6 +39136,7 @@ var render = function () {
                 },
               ],
               staticClass: "form-select",
+              class: _vm.hasError("stol_id") ? "is-invalid" : "",
               attrs: {
                 id: "stol_id",
                 name: "stol_id",
@@ -39003,14 +39184,22 @@ var render = function () {
             2
           ),
           _vm._v(" "),
-          _c("br"),
+          _vm.hasError("stol_id")
+            ? _c("div", { staticClass: "invalid-feedback" }, [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(_vm.getError("stol_id")) +
+                    "\n        "
+                ),
+              ])
+            : _vm._e(),
           _vm._v(" "),
           _c(
             "v-btn",
             {
               staticClass: "mr-4",
-              attrs: { disabled: !_vm.valid, color: "success" },
-              on: { click: _vm.validate },
+              attrs: { color: "success" },
+              on: { click: _vm.dodajRezervaciju },
             },
             [_vm._v("\n            Spremi\n        ")]
           ),
@@ -39107,7 +39296,7 @@ var render = function () {
               ],
               staticClass: "text-danger",
             },
-            [_vm._v("Ispunite ovo polje!")]
+            [_vm._v("Odaberite status stola!")]
           ),
           _vm._v(" "),
           _c("v-select", {
@@ -39217,6 +39406,12 @@ var render = function () {
   return _c(
     "div",
     [
+      _vm.meniIzbrisan
+        ? _c("v-alert", { attrs: { type: "success" } }, [
+            _vm._v("\n        Meni uspješno izbrisan!\n    "),
+          ])
+        : _vm._e(),
+      _vm._v(" "),
       _c("div", [
         _c("div", { staticClass: "card-body table-responsive p-0" }, [
           _c("table", { staticClass: "table" }, [
@@ -39543,6 +39738,12 @@ var render = function () {
   return _c(
     "div",
     [
+      _vm.rezervacijaIzbrisana
+        ? _c("v-alert", { attrs: { type: "success" } }, [
+            _vm._v("\n        Rezervacija uspješno izbrisana!\n    "),
+          ])
+        : _vm._e(),
+      _vm._v(" "),
       _c("div", [
         _c("div", { staticClass: "card-body table-responsive p-0" }, [
           _c("table", { staticClass: "table" }, [

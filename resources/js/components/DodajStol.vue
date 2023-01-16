@@ -15,7 +15,7 @@
                 v-model="form.broj_gostiju"
             ></v-text-field>
             <span class="text-danger" v-show="stolError.broj_gostiju"
-                >Ispunite ovo polje!</span
+                >Odaberite status stola!</span
             >
             <v-select
                 placeholder="Status"
@@ -65,12 +65,21 @@ export default {
                     )
                     .then(() => {
                         this.stolDodan = true;
+                        setTimeout(() => {
+                            this.stolDodan = false;
+                            this.clearForm();
+                        }, 7000);
                         console.log("stol dodan");
                     })
                     .catch((e) => {
                         console.log("Nešto pošlo krivo! Greška=" + e);
                     });
             }
+        },
+        clearForm() {
+            this.form.naziv = "";
+            this.form.broj_gostiju = "";
+            this.form.status = "";
         },
     },
 };

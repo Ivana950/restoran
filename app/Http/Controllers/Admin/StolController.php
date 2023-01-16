@@ -42,5 +42,6 @@ class StolController extends Controller
     {
         $stol = Stol::find($id);
         $stol->delete();
+        $stol->rezervacije()->delete();
     }
 }

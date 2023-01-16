@@ -1,5 +1,8 @@
 <template>
     <div>
+        <v-alert v-if="meniIzbrisan" type="success">
+            Meni uspješno izbrisan!
+        </v-alert>
         <div>
             <div class="card-body table-responsive p-0">
                 <table class="table">
@@ -219,8 +222,12 @@ export default {
         izbrisiMeni(id) {
             axios
                 .get("http://127.0.0.1:8000/admin/meni/izbrisi/" + id)
-                .then((response) => {
+                .then(() => {
                     this.dohvatiMenije();
+                    this.meniIzbrisan = true;
+                    setTimeout(() => {
+                        this.meniIzbrisan = false;
+                    }, 4000);
                 })
                 .catch((e) => {
                     console.log("Nešto pošlo krivo! Greška=" + e);

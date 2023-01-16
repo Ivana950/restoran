@@ -77,12 +77,22 @@ export default {
                     .post("http://127.0.0.1:8000/admin/meni/dodaj", this.form)
                     .then((response) => {
                         this.meniDodan = true;
+                        setTimeout(() => {
+                            this.meniDodan = false;
+                            this.clearForm();
+                        }, 7000);
                         console.log(response.data);
                     })
                     .catch((e) => {
                         console.log("Nešto pošlo krivo! Greška=" + e);
                     });
             }
+        },
+        clearForm() {
+            this.form.naziv = "";
+            this.form.opis = "";
+            this.form.cijena = "";
+            this.form.slika = "";
         },
     },
 };

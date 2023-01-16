@@ -3,47 +3,81 @@
         <v-alert v-if="rezervacijaDodana" type="success">
             Rezervacija uspješno dodana!
         </v-alert>
-        <v-form ref="form" v-model="valid" lazy-validation>
-            <v-text-field
-                label="Ime"
+
+        <form @keydown="clearError">
+            <input
+                id="ime"
+                name="ime"
+                placeholder="Ime"
+                type="text"
                 v-model="form.ime"
-                :rules="nameRules"
-                required
-            ></v-text-field>
-            <v-text-field
-                label="Prezime"
+                class="form-control"
+                :class="hasError('ime') ? 'is-invalid' : ''"
+            />
+            <div v-if="hasError('ime')" class="invalid-feedback">
+                {{ getError("ime") }}
+            </div>
+
+            <input
+                id="prezime"
+                name="prezime"
+                placeholder="Prezime"
+                type="text"
                 v-model="form.prezime"
-                :rules="lastNameRules"
-                required
-            ></v-text-field>
-            <v-text-field
-                label="Email"
+                class="form-control"
+                :class="hasError('prezime') ? 'is-invalid' : ''"
+            />
+            <div v-if="hasError('prezime')" class="invalid-feedback">
+                {{ getError("prezime") }}
+            </div>
+            <input
+                id="email"
+                name="email"
+                placeholder="Email"
+                type="email"
                 v-model="form.email"
-                :rules="emailRules"
-                required
-            ></v-text-field>
-            <v-text-field
+                class="form-control"
+                :class="hasError('email') ? 'is-invalid' : ''"
+            />
+            <div v-if="hasError('email')" class="invalid-feedback">
+                {{ getError("email") }}
+            </div>
+            <input
+                id="broj_telefona"
+                name="broj_telefona"
+                placeholder="Broj telefona"
                 type="integer"
-                label="Broj telefona"
                 v-model="form.broj_telefona"
-                :rules="telephoneRules"
-                required
-            ></v-text-field>
+                class="form-control"
+                :class="hasError('broj_telefona') ? 'is-invalid' : ''"
+            />
+            <div v-if="hasError('broj_telefona')" class="invalid-feedback">
+                {{ getError("broj_telefona") }}
+            </div>
+            <input
+                id="datum_rezervacije"
+                name="datum_rezervacije"
+                class="form-control"
+                type="datetime-local"
+                v-model="form.datum_rezervacije"
+                :class="hasError('datum_rezervacije') ? 'is-invalid' : ''"
+            />
+            <div v-if="hasError('datum_rezervacije')" class="invalid-feedback">
+                {{ getError("datum_rezervacije") }}
+            </div>
 
-            <input type="datetime-local" v-model="form.datum_rezervacije" />
-            <span
-                class="text-danger"
-                v-show="rezervacijaError.datum_rezervacije"
-                >Izaberite datum i vrijeme rezervacije!</span
-            >
-
-            <v-text-field
+            <input
                 id="broj_gostiju"
                 name="broj_gostiju"
-                label="Broj gostiju"
+                placeholder="Broj gostiju"
                 type="integer"
                 v-model="form.broj_gostiju"
-            ></v-text-field>
+                class="form-control"
+                :class="hasError('broj_gostiju') ? 'is-invalid' : ''"
+            />
+            <div v-if="hasError('broj_gostiju')" class="invalid-feedback">
+                {{ getError("broj_gostiju") }}
+            </div>
 
             <select
                 id="stol_id"
@@ -51,23 +85,21 @@
                 v-model="form.stol_id"
                 class="form-select"
                 aria-label="Default select example"
+                :class="hasError('stol_id') ? 'is-invalid' : ''"
             >
                 <option selected value="">Odaberite stol</option>
                 <option v-for="stol in stolovi" :key="stol.id" :value="stol.id">
                     {{ stol.naziv }} ({{ stol.broj_gostiju }})
                 </option>
             </select>
-            <br />
+            <div v-if="hasError('stol_id')" class="invalid-feedback">
+                {{ getError("stol_id") }}
+            </div>
 
-            <v-btn
-                :disabled="!valid"
-                color="success"
-                class="mr-4"
-                @click="validate"
-            >
+            <v-btn color="success" class="mr-4" @click="dodajRezervaciju">
                 Spremi
             </v-btn>
-        </v-form>
+        </form>
     </div>
 </template>
 
@@ -77,23 +109,6 @@ export default {
         this.dohvatiStolove();
     },
     data: () => ({
-        valid: true,
-        nameRules: [
-            (v) => !!v || "Unesite ime!",
-            (v) => (v && v.length <= 20) || "Maksimalno 20 slova",
-        ],
-        lastNameRules: [
-            (v) => !!v || "Unesite prezime!",
-            (v) => (v && v.length <= 20) || "Maksimalno 20 slova",
-        ],
-        emailRules: [
-            (v) => !!v || "Unesite e-mail",
-            (v) => /.+@.+\..+/.test(v) || "Neispravni podaci",
-        ],
-        telephoneRules: [
-            (v) => !!v || "Unesite broj telefona!",
-            (v) => (v && v.length <= 20) || "Maksimalno 20 brojeva",
-        ],
         form: {
             ime: "",
             prezime: "",
@@ -105,29 +120,43 @@ export default {
         },
         stolovi: [],
         rezervacijaDodana: false,
-        rezervacijaError: {
-            datum_rezervacije: false,
-        },
+        errors: {},
     }),
     methods: {
-        validate() {
-            this.form.datum_rezervacije == ""
-                ? (this.rezervacijaError.datum_rezervacije = true)
-                : (this.rezervacijaError.datum_rezervacije = false);
-            if (this.$refs.form.validate() && this.form.datum_rezervacije) {
-                axios
-                    .post(
-                        "http://127.0.0.1:8000/admin/rezervacije/dodaj",
-                        this.form
-                    )
-                    .then(() => {
-                        this.rezervacijaDodana = true;
-                        console.log("rezervacija dodana");
-                    })
-                    .catch((e) => {
+        dodajRezervaciju() {
+            axios
+                .post(
+                    "http://127.0.0.1:8000/admin/rezervacije/dodaj",
+                    this.form
+                )
+                .then(() => {
+                    this.rezervacijaDodana = true;
+                    setTimeout(() => {
+                        this.rezervacijaDodana = false;
+                        this.clearForm();
+                    }, 7000);
+                    this.dohvatiStolove();
+                    console.log("rezervacija dodana");
+                })
+                .catch((e) => {
+                    if (e.response.status == 422) {
+                        this.setErrors(e.response.data.errors);
+                    } else {
                         console.log("Nešto pošlo krivo! Greška=" + e);
-                    });
-            }
+                    }
+                });
+        },
+        setErrors(errors) {
+            this.errors = errors;
+        },
+        hasError(fieldName) {
+            return fieldName in this.errors;
+        },
+        getError(fieldName) {
+            return this.errors[fieldName][0];
+        },
+        clearError(event) {
+            delete this.errors[event.target.name];
         },
         dohvatiStolove() {
             axios
@@ -138,6 +167,15 @@ export default {
                 .catch((e) => {
                     console.log("Nešto pošlo krivo! Greška=" + e);
                 });
+        },
+        clearForm() {
+            this.form.ime = "";
+            this.form.prezime = "";
+            this.form.email = "";
+            this.form.broj_telefona = "";
+            this.form.datum_rezervacije = "";
+            this.form.broj_gostiju = "";
+            this.form.stol_id = "";
         },
     },
 };

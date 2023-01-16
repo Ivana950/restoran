@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rezervacija;
-use App\Models\Stol;
+
 
 class RezervacijaController extends Controller
 {
     public function dohvatiRezervacije()
     {
-        $rezervacija = Rezervacija::with('stol')->get();
+        $rezervacija = Rezervacija::with('stol')->orderBy('created_at', 'DESC')->get();
 
         return response()->json([
             'rezervacija' => $rezervacija
