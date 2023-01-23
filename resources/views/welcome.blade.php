@@ -13,19 +13,12 @@
 
     <title>Restoran Toscana</title>
 
+
 </head>
 
 <body>
-    <div id="app">
-        <v-app>
-            <v-container>
-                <h1>Restoran Toscana</h1>
-            </v-container>
+    <welcome-page></welcome-page>
 
-        </v-app>
-
-    </div>
-    <script src="{{asset('js/app.js')}}"></script>
 </body>
 
 </html>

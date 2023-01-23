@@ -6,8 +6,7 @@ use App\Models\Stol;
 use App\Models\Rezervacija;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePostRequest;
-use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\RezervacijaRequest;
 
 class RezervacijaController extends Controller
 {
@@ -21,7 +20,7 @@ class RezervacijaController extends Controller
         return view('admin.dodajRezervaciju');
     }
 
-    public function dodajRezervaciju(StorePostRequest $request)
+    public function dodajRezervaciju(RezervacijaRequest $request)
     {
         $validetedData = $request->validated();
 
@@ -41,8 +40,10 @@ class RezervacijaController extends Controller
         $stol->save();
     }
 
-    public function urediRezervaciju(Request $request, $id)
+    public function urediRezervaciju(RezervacijaRequest $request, $id)
     {
+        $validetedData = $request->validated();
+
         $rezervacija = Rezervacija::find($id);
         $rezervacija->ime = $request->ime;
         $rezervacija->prezime = $request->prezime;
@@ -50,10 +51,14 @@ class RezervacijaController extends Controller
         $rezervacija->broj_telefona = $request->broj_telefona;
         $rezervacija->datum_rezervacije = $request->datum_rezervacije;
         $rezervacija->broj_gostiju = $request->broj_gostiju;
-        $rezervacija->stol_id = $request->stol;
+        $rezervacija->stol_id = $request->stol_id;
         $rezervacija->save();
 
-        return $rezervacija;
+        $rezervacija->save($validetedData);
+
+        $stol = Stol::findOrFail($request->stol_id);
+        $stol->status = 'Nedostupan';
+        $stol->save();
     }
 
     public function izbrisiRezervaciju(Request $request, $id)

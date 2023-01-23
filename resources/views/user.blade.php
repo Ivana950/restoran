@@ -1,7 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h1>Dobrodosli u restoran Toscana!</h1>
-</div>
+
+<body class="sidebar-mini" style="height: auto;">
+
+
+    <body class="sidebar-mini" style="height: auto;">
+        @yield('sadrzaj')
+    </body>
+
+
+
+</body>
 @endsection

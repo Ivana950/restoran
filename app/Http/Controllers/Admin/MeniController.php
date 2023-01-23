@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Meni;
 use Illuminate\Http\Request;
+use App\Http\Requests\MeniRequest;
+use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
 
 class MeniController extends Controller
@@ -19,11 +20,11 @@ class MeniController extends Controller
         return view('admin.dodajMeni');
     }
 
-    public function dodajMeni(Request $request)
+    public function dodajMeni(MeniRequest $request)
     {
-        /* $this->validate($request, [
-            'slika' => 'required|image|mimes:jpeg,png,jpg,svg'
-        ]);*/
+        $validatedData = $request->validated();
+
+
         if ($request->slika) {
             $slika = time() . '.' . explode('/', explode(':', substr($request->slika, 0, strpos($request->slika, ';')))[1])[1];
 
@@ -32,22 +33,19 @@ class MeniController extends Controller
             $slika = null;
         }
 
-        Meni::create([
-            'naziv' => $request->naziv,
-            'opis' => $request->opis,
-            'cijena' => $request->cijena,
-            'slika' => $slika,
-        ]);
-        /*$meni = new Meni();
+        $meni = new Meni();
         $meni->naziv = $request->naziv;
         $meni->opis = $request->opis;
         $meni->cijena = $request->cijena;
-        $slika->slika = $slika;
-        $meni->save();*/
+        $meni->slika = $slika;
+        $meni->save($validatedData);
     }
 
-    public function urediMeni(Request $request, $id)
+    public function urediMeni(MeniRequest $request, $id)
     {
+
+        $validatedData = $request->validated();
+
         $meni = Meni::findOrFail($id);
 
         if ($request->slika) {
@@ -66,7 +64,7 @@ class MeniController extends Controller
         $meni->opis = $request->opis;
         $meni->cijena = $request->cijena;
         $meni->slika = $slika;
-        $meni->save();
+        $meni->save($validatedData);
 
         return $meni;
     }

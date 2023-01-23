@@ -20,7 +20,7 @@ class StolController extends Controller
     }
     public function dohvatiSlobodneStolove()
     {
-        $stolovi = Stol::where('status', '=', 'dostupan')->get();
+        $stolovi = Stol::where('status', '=', 'dostupan')->orderBy('created_at', 'DESC')->get();
 
         return response()->json([
             'stolovi' => $stolovi

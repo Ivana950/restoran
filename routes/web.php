@@ -8,6 +8,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+# ADMIN RUTE
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'as' => 'admin.', 'middleware' => ['isAdmin']], function () {
 
     Route::get('/', 'AdminController@index')->name('index');
@@ -34,9 +35,21 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'as' => 'admin.', 'mi
     Route::post('/rezervacije/dodaj', 'RezervacijaController@dodajRezervaciju')->name('rezervacije.dodajRezervaciju');
 });
 
+# USER RUTE
+
 Route::group(['prefix' => 'user', 'namespace' => 'User', 'as' => 'user.', 'middleware' => ['auth']], function () {
+
     Route::get('/', 'UserController@index')->name('index');
+
+    // MENI
+    Route::get('/meni', 'MeniController@index')->name('meni.index');
+
+    // REZERVACIJE
+    Route::get('/rezervacija', 'RezervacijaController@index')->name('rezervacija.index');
+    Route::post('/rezervacija/dodaj', 'RezervacijaController@dodajRezervaciju')->name('rezervacije.dodajRezervaciju');
 });
+
+# API
 
 Route::get('/stolovi', 'StolController@dohvatiStolove');
 Route::get('/slobodniStolovi', 'StolController@dohvatiSlobodneStolove');
@@ -44,5 +57,3 @@ Route::get('/meni', 'MeniController@dohvatiMeni');
 Route::get('/rezervacije', 'RezervacijaController@dohvatiRezervacije');
 
 Auth::routes();
-
-//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
