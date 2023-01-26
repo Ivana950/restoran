@@ -66,7 +66,7 @@ class RezervacijaController extends Controller
 
         $rezervacija = Rezervacija::find($id);
 
-        $stol = Stol::findOrFail($request->stol);
+        $stol = Stol::findOrFail($request->stol_id);
         $stol->status = 'Dostupan';
 
         $stol->save();

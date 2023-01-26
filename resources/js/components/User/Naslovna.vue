@@ -14,7 +14,7 @@
                 >
             </div>
         </div>
-        <div class="container mt-16">
+        <div class="container my-16">
             <v-row>
                 <v-col>
                     <h2>O NAMA</h2>

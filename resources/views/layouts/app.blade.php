@@ -48,21 +48,18 @@
 
                         <!-- Right Side Of Navbar -->
                         <ul class="navbar-nav ms-auto">
-                            @if (Auth::user())
+                            @if(Auth::check() && !Auth::user()->is_admin)
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('user.index') }}">Naslovnica</a>
                             </li>
-                            @endif
-                            @if (Auth::user())
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('user.meni.index') }}">Meni</a>
                             </li>
-                            @endif
-                            @if (Auth::user())
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('user.rezervacija.index') }}">Napravi rezervaciju</a>
                             </li>
                             @endif
+
                             <!-- Authentication Links -->
                             @guest
                             @if (Route::has('login'))

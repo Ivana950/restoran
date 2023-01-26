@@ -1,66 +1,71 @@
 <template>
-    <div>
-        <v-alert v-if="meniDodan" type="success">
+    <div class="container mt-8 ml-16">
+        <v-alert v-if="meniDodan" type="success" height="36px">
             Meni uspješno dodan!
         </v-alert>
         <form @keydown="clearError" @change="clearError">
-            <input
-                id="naziv"
-                name="naziv"
-                placeholder="Naziv"
-                type="text"
-                v-model="form.naziv"
-                class="form-control"
-                :class="hasError('naziv') ? 'is-invalid' : ''"
-            />
-            <div v-if="hasError('naziv')" class="invalid-feedback">
-                {{ getError("naziv") }}
+            <div class="mb-5">
+                <input
+                    id="naziv"
+                    name="naziv"
+                    placeholder="Naziv"
+                    type="text"
+                    v-model="form.naziv"
+                    class="form-control"
+                    :class="hasError('naziv') ? 'is-invalid' : ''"
+                />
+                <div v-if="hasError('naziv')" class="invalid-feedback">
+                    {{ getError("naziv") }}
+                </div>
             </div>
-
-            <input
-                id="opis"
-                name="opis"
-                placeholder="Opis"
-                type="text"
-                v-model="form.opis"
-                class="form-control"
-                :class="hasError('opis') ? 'is-invalid' : ''"
-            />
-            <div v-if="hasError('opis')" class="invalid-feedback">
-                {{ getError("opis") }}
+            <div class="mb-5">
+                <input
+                    id="opis"
+                    name="opis"
+                    placeholder="Opis"
+                    type="text"
+                    v-model="form.opis"
+                    class="form-control"
+                    :class="hasError('opis') ? 'is-invalid' : ''"
+                />
+                <div v-if="hasError('opis')" class="invalid-feedback">
+                    {{ getError("opis") }}
+                </div>
             </div>
-
-            <input
-                type="file"
-                id="slika"
-                name="slika"
-                class="form-control"
-                @change="izabranaSlika"
-                :class="hasError('slika') ? 'is-invalid' : ''"
-            />
-            <div v-if="hasError('slika')" class="invalid-feedback">
-                {{ getError("slika") }}
+            <div class="mb-5">
+                <input
+                    type="file"
+                    id="slika"
+                    name="slika"
+                    class="form-control"
+                    @change="izabranaSlika"
+                    :class="hasError('slika') ? 'is-invalid' : ''"
+                />
+                <div v-if="hasError('slika')" class="invalid-feedback">
+                    {{ getError("slika") }}
+                </div>
             </div>
             <img
                 :src="`${form.slika}`"
                 class="figure-img img-fluid"
                 style="max-height: 300px"
             />
-
-            <input
-                id="cijena"
-                name="cijena"
-                placeholder="Cijena"
-                type="integer"
-                v-model="form.cijena"
-                class="form-control"
-                :class="hasError('cijena') ? 'is-invalid' : ''"
-            />
-            <div v-if="hasError('cijena')" class="invalid-feedback">
-                {{ getError("cijena") }}
+            <div class="mb-5">
+                <input
+                    id="cijena"
+                    name="cijena"
+                    placeholder="Cijena"
+                    type="integer"
+                    v-model="form.cijena"
+                    class="form-control"
+                    :class="hasError('cijena') ? 'is-invalid' : ''"
+                />
+                <div v-if="hasError('cijena')" class="invalid-feedback">
+                    {{ getError("cijena") }}
+                </div>
             </div>
+            <v-btn class="primary" @click="dodajMeni()">Dodaj</v-btn>
         </form>
-        <v-btn @click="dodajMeni()">Dodaj</v-btn>
     </div>
 </template>
 
@@ -94,6 +99,7 @@ export default {
                     setTimeout(() => {
                         this.meniDodan = false;
                         this.clearForm();
+                        window.location = "http://127.0.0.1:8000/admin/meni";
                     }, 4000);
                 })
                 .catch((e) => {
@@ -121,3 +127,13 @@ export default {
     },
 };
 </script>
+<style scoped>
+.container {
+    width: 80%;
+    background-color: aliceblue;
+}
+form {
+    padding: 20px;
+    width: 500px;
+}
+</style>

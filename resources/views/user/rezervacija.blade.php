@@ -2,7 +2,7 @@
 
 @section('sadrzaj')
 
-<div>
+<div class="rezervacija-pozadina">
     <rezervacija></rezervacija>
 </div>
 @endsection

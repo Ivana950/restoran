@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <v-row>
-            <v-col>
+            <v-col class="pa-0">
                 <div
                     class="welcomePage d-flex align-items-center justify-content-center"
                 >
@@ -14,7 +14,7 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-col>
+            <v-col class="pa-0">
                 <my-footer></my-footer>
             </v-col>
         </v-row>
@@ -22,7 +22,7 @@
 </template>
 <style scoped>
 .welcomePage {
-    height: 500px;
+    height: 600px;
     background-image: url("https://img.theculturetrip.com/650x/wp-content/uploads/2021/12/carlos-lindner-sjbya8daw54-unsplash.jpg");
     background-size: cover;
 }

@@ -20,6 +20,8 @@ Vue.component('dodaj-meni', require('./components/Admin/DodajMeni.vue').default)
 Vue.component('rezervacije', require('./components/Admin/Rezervacije.vue').default);
 Vue.component('dodaj-rezervaciju', require('./components/Admin/DodajRezervaciju.vue').default);
 
+
+
 //USER KOMPONENTE
 Vue.component('naslovnica', require('./components/User/Naslovna.vue').default);
 Vue.component('user-meni', require('./components/User/Meni.vue').default);

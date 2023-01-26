@@ -1,13 +1,25 @@
 <template>
-    <div>
+    <div class="container">
         <v-alert v-if="stolIzbrisan" type="success">
             Stol uspješno izbrisan!
         </v-alert>
         <div>
-            <div class="card-body table-responsive p-0">
+            <v-row>
+                <v-col class="text-right">
+                    <v-btn
+                        class="my-4"
+                        color="primary"
+                        width="150px"
+                        @click="dodajStol()"
+                        >DODAJ STOL</v-btn
+                    >
+                </v-col>
+            </v-row>
+
+            <div class="card-body table-responsive mb-16 text-center">
                 <table class="table">
-                    <thead>
-                        <tr>
+                    <thead class="white--text">
+                        <tr class="blue">
                             <th>Naziv</th>
                             <th>Broj gostiju</th>
                             <th>Status</th>
@@ -18,23 +30,37 @@
                         <tr v-for="stol in stolovi" :key="stol.id">
                             <td>{{ stol.naziv }}</td>
                             <td>{{ stol.broj_gostiju }}</td>
-                            <td>{{ stol.status }}</td>
                             <td>
-                                <button
-                                    type="button"
-                                    class="btn btn-primary"
+                                <v-chip
+                                    class="ma-2"
+                                    :color="
+                                        stol.status === 'Dostupan'
+                                            ? 'green'
+                                            : 'red'
+                                    "
+                                    text-color="white"
+                                    >{{ stol.status }}
+                                </v-chip>
+                            </td>
+                            <td>
+                                <v-btn
+                                    color="primary"
                                     data-bs-toggle="modal"
                                     data-bs-target="#stolModal"
                                     @click="dohvatiStol(stol)"
                                 >
+                                    <v-icon left> mdi-pencil </v-icon>
                                     Uredi
-                                </button>
-                                <button
+                                </v-btn>
+
+                                <v-btn
+                                    depressed
+                                    color="error"
                                     @click="izbrisiStol(stol.id)"
-                                    class="btn btn-sm btn-danger"
                                 >
-                                    <i class="fa fa-trash"></i> Izbriši
-                                </button>
+                                    <v-icon left> mdi-delete </v-icon>
+                                    Izbriši
+                                </v-btn>
                             </td>
                         </tr>
                     </tbody>
@@ -55,7 +81,7 @@
                 role="document"
             >
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header blue white--text">
                         <h5 class="modal-title" id="stolModalLabel">Uredi</h5>
                         <button
                             type="button"
@@ -66,58 +92,72 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body pa-5">
                         <form @keydown="clearError">
-                            <input
-                                id="naziv"
-                                name="naziv"
-                                placeholder="Naziv"
-                                type="text"
-                                v-model="form.naziv"
-                                class="form-control"
-                                :class="hasError('naziv') ? 'is-invalid' : ''"
-                            />
-                            <div
-                                v-if="hasError('naziv')"
-                                class="invalid-feedback"
-                            >
-                                {{ getError("naziv") }}
+                            <div class="mb-5">
+                                <input
+                                    id="naziv"
+                                    name="naziv"
+                                    placeholder="Naziv"
+                                    type="text"
+                                    v-model="form.naziv"
+                                    class="form-control"
+                                    :class="
+                                        hasError('naziv') ? 'is-invalid' : ''
+                                    "
+                                />
+                                <div
+                                    v-if="hasError('naziv')"
+                                    class="invalid-feedback"
+                                >
+                                    {{ getError("naziv") }}
+                                </div>
                             </div>
 
-                            <input
-                                id="broj_gostiju"
-                                name="broj_gostiju"
-                                placeholder="Broj gostiju"
-                                type="integer"
-                                v-model="form.broj_gostiju"
-                                class="form-control"
-                                :class="
-                                    hasError('broj_gostiju') ? 'is-invalid' : ''
-                                "
-                            />
-                            <div
-                                v-if="hasError('broj_gostiju')"
-                                class="invalid-feedback"
-                            >
-                                {{ getError("broj_gostiju") }}
+                            <div class="mb-5">
+                                <input
+                                    id="broj_gostiju"
+                                    name="broj_gostiju"
+                                    placeholder="Broj gostiju"
+                                    type="integer"
+                                    v-model="form.broj_gostiju"
+                                    class="form-control"
+                                    :class="
+                                        hasError('broj_gostiju')
+                                            ? 'is-invalid'
+                                            : ''
+                                    "
+                                />
+                                <div
+                                    v-if="hasError('broj_gostiju')"
+                                    class="invalid-feedback"
+                                >
+                                    {{ getError("broj_gostiju") }}
+                                </div>
                             </div>
 
-                            <select
-                                @change="clearError"
-                                id="status"
-                                name="status"
-                                v-model="form.status"
-                                class="form-select"
-                                :class="hasError('status') ? 'is-invalid' : ''"
-                            >
-                                <option value="Dostupan">Dostupan</option>
-                                <option value="Nedostupan">Nedostupan</option>
-                            </select>
-                            <div
-                                v-if="hasError('status')"
-                                class="invalid-feedback"
-                            >
-                                {{ getError("status") }}
+                            <div class="mb-5">
+                                <select
+                                    @change="clearError"
+                                    id="status"
+                                    name="status"
+                                    v-model="form.status"
+                                    class="form-select"
+                                    :class="
+                                        hasError('status') ? 'is-invalid' : ''
+                                    "
+                                >
+                                    <option value="Dostupan">Dostupan</option>
+                                    <option value="Nedostupan">
+                                        Nedostupan
+                                    </option>
+                                </select>
+                                <div
+                                    v-if="hasError('status')"
+                                    class="invalid-feedback"
+                                >
+                                    {{ getError("status") }}
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -125,20 +165,13 @@
                         <v-alert v-if="stolSpremljen" type="success"
                             >Stol uspješno uređen!</v-alert
                         >
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal"
+                        <v-btn depressed color="error" data-bs-dismiss="modal">
+                            ZATVORI
+                        </v-btn>
+
+                        <v-btn @click="spremiStol()" color="primary"
+                            >SPREMI</v-btn
                         >
-                            Zatvori
-                        </button>
-                        <button
-                            @click="spremiStol()"
-                            type="button"
-                            class="btn btn-primary"
-                        >
-                            Spremi
-                        </button>
                     </div>
                 </div>
             </div>
@@ -187,6 +220,9 @@ export default {
                 status: stol.status,
             };
         },
+        dodajStol() {
+            window.location = "http://127.0.0.1:8000/admin/stolovi/dodaj";
+        },
         spremiStol() {
             axios
                 .post(
@@ -234,3 +270,11 @@ export default {
     },
 };
 </script>
+<style scoped>
+.v-btn {
+    font-size: 12px;
+}
+.container {
+    width: 75%;
+}
+</style>

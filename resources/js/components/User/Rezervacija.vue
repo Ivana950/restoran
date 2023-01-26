@@ -3,7 +3,7 @@
         <v-alert v-if="rezervacijaDodana" type="success">
             Rezervacija uspješno dodana!
         </v-alert>
-        <div class="box my-12 pr-10">
+        <div class="box my-6 pr-10 white">
             <v-row>
                 <v-col class="text-right py-0 pr-5">
                     <img
@@ -163,7 +163,7 @@
 
                         <v-btn
                             color="success"
-                            class="mr-4 mt-5 mb-8"
+                            class="mr-4 mb-5"
                             @click="dodajRezervaciju"
                         >
                             REZERVIRAJ
@@ -203,7 +203,7 @@ export default {
                         this.rezervacijaDodana = false;
                         this.clearForm();
                         window.location = "http://127.0.0.1:8000/user";
-                    }, 4000);
+                    }, 3000);
                     this.dohvatiStolove();
                     console.log("rezervacija dodana");
                 })
@@ -250,8 +250,9 @@ export default {
 <style scoped>
 .box {
     box-shadow: 2px 2px 5px grey;
+    height: 100%;
 }
 .container {
-    width: 55%;
+    width: 70%;
 }
 </style>

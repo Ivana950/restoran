@@ -1,13 +1,23 @@
 <template>
-    <div>
+    <div class="container">
         <v-alert v-if="rezervacijaIzbrisana" type="success">
             Rezervacija uspješno izbrisana!
         </v-alert>
         <div>
-            <div class="card-body table-responsive p-0">
+            <v-row>
+                <v-col class="text-right">
+                    <v-btn
+                        class="my-4"
+                        color="primary"
+                        @click="dodajRezervaciju()"
+                        >DODAJ REZERVACIJU</v-btn
+                    >
+                </v-col>
+            </v-row>
+            <div class="card-body table-responsive text-center">
                 <table class="table">
                     <thead>
-                        <tr>
+                        <tr class="blue white--text">
                             <th>Ime</th>
                             <th>Prezime</th>
                             <th>E-mail</th>
@@ -45,21 +55,24 @@
                                 {{ rezervacija.stol.naziv }}
                             </td>
                             <td>
-                                <button
-                                    class="btn btn-sm btn-warning"
-                                    type="button"
+                                <v-btn
+                                    color="primary"
                                     data-bs-toggle="modal"
                                     data-bs-target="#rezervacijaModal"
                                     @click="dohvatiRezervaciju(rezervacija)"
                                 >
-                                    <i class="fa fa-edit"></i> Uredi
-                                </button>
-                                <button
-                                    class="btn btn-sm btn-danger"
+                                    <v-icon left> mdi-pencil </v-icon>
+                                    Uredi
+                                </v-btn>
+
+                                <v-btn
+                                    depressed
+                                    color="error"
                                     @click="izbrisiRezervaciju(rezervacija)"
                                 >
-                                    <i class="fa fa-trash"></i> Izbriši
-                                </button>
+                                    <v-icon left> mdi-delete </v-icon>
+                                    Izbriši
+                                </v-btn>
                             </td>
                         </tr>
                     </tbody>
@@ -80,7 +93,7 @@
                 role="document"
             >
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header blue white--text">
                         <h5 class="modal-title" id="rezervacijaModalLabel">
                             Uredi
                         </h5>
@@ -93,126 +106,145 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body pa-5">
                         <form @keydown="clearError">
-                            <input
-                                id="ime"
-                                name="ime"
-                                placeholder="Ime"
-                                type="text"
-                                v-model="form.ime"
-                                class="form-control"
-                                :class="hasError('ime') ? 'is-invalid' : ''"
-                            />
-                            <div
-                                v-if="hasError('ime')"
-                                class="invalid-feedback"
-                            >
-                                {{ getError("ime") }}
+                            <div class="mb-5">
+                                <input
+                                    id="ime"
+                                    name="ime"
+                                    placeholder="Ime"
+                                    type="text"
+                                    v-model="form.ime"
+                                    class="form-control"
+                                    :class="hasError('ime') ? 'is-invalid' : ''"
+                                />
+                                <div
+                                    v-if="hasError('ime')"
+                                    class="invalid-feedback"
+                                >
+                                    {{ getError("ime") }}
+                                </div>
                             </div>
-
-                            <input
-                                id="prezime"
-                                name="prezime"
-                                placeholder="Prezime"
-                                type="text"
-                                v-model="form.prezime"
-                                class="form-control"
-                                :class="hasError('prezime') ? 'is-invalid' : ''"
-                            />
-                            <div
-                                v-if="hasError('prezime')"
-                                class="invalid-feedback"
-                            >
-                                {{ getError("prezime") }}
+                            <div class="mb-5">
+                                <input
+                                    id="prezime"
+                                    name="prezime"
+                                    placeholder="Prezime"
+                                    type="text"
+                                    v-model="form.prezime"
+                                    class="form-control"
+                                    :class="
+                                        hasError('prezime') ? 'is-invalid' : ''
+                                    "
+                                />
+                                <div
+                                    v-if="hasError('prezime')"
+                                    class="invalid-feedback"
+                                >
+                                    {{ getError("prezime") }}
+                                </div>
                             </div>
-                            <input
-                                id="email"
-                                name="email"
-                                placeholder="Email"
-                                type="email"
-                                v-model="form.email"
-                                class="form-control"
-                                :class="hasError('email') ? 'is-invalid' : ''"
-                            />
-                            <div
-                                v-if="hasError('email')"
-                                class="invalid-feedback"
-                            >
-                                {{ getError("email") }}
+                            <div class="mb-5">
+                                <input
+                                    id="email"
+                                    name="email"
+                                    placeholder="Email"
+                                    type="email"
+                                    v-model="form.email"
+                                    class="form-control"
+                                    :class="
+                                        hasError('email') ? 'is-invalid' : ''
+                                    "
+                                />
+                                <div
+                                    v-if="hasError('email')"
+                                    class="invalid-feedback"
+                                >
+                                    {{ getError("email") }}
+                                </div>
                             </div>
-                            <input
-                                id="broj_telefona"
-                                name="broj_telefona"
-                                placeholder="Broj telefona"
-                                type="integer"
-                                v-model="form.broj_telefona"
-                                class="form-control"
-                                :class="
-                                    hasError('broj_telefona')
-                                        ? 'is-invalid'
-                                        : ''
-                                "
-                            />
-                            <div
-                                v-if="hasError('broj_telefona')"
-                                class="invalid-feedback"
-                            >
-                                {{ getError("broj_telefona") }}
+                            <div class="mb-5">
+                                <input
+                                    id="broj_telefona"
+                                    name="broj_telefona"
+                                    placeholder="Broj telefona"
+                                    type="integer"
+                                    v-model="form.broj_telefona"
+                                    class="form-control"
+                                    :class="
+                                        hasError('broj_telefona')
+                                            ? 'is-invalid'
+                                            : ''
+                                    "
+                                />
+                                <div
+                                    v-if="hasError('broj_telefona')"
+                                    class="invalid-feedback"
+                                >
+                                    {{ getError("broj_telefona") }}
+                                </div>
                             </div>
-                            <input
-                                id="datum_rezervacije"
-                                name="datum_rezervacije"
-                                class="form-control"
-                                type="datetime-local"
-                                v-model="form.datum_rezervacije"
-                                :class="
-                                    hasError('datum_rezervacije')
-                                        ? 'is-invalid'
-                                        : ''
-                                "
-                            />
-                            <div
-                                v-if="hasError('datum_rezervacije')"
-                                class="invalid-feedback"
-                            >
-                                {{ getError("datum_rezervacije") }}
+                            <div class="mb-5">
+                                <input
+                                    id="datum_rezervacije"
+                                    name="datum_rezervacije"
+                                    class="form-control"
+                                    type="datetime-local"
+                                    v-model="form.datum_rezervacije"
+                                    :class="
+                                        hasError('datum_rezervacije')
+                                            ? 'is-invalid'
+                                            : ''
+                                    "
+                                />
+                                <div
+                                    v-if="hasError('datum_rezervacije')"
+                                    class="invalid-feedback"
+                                >
+                                    {{ getError("datum_rezervacije") }}
+                                </div>
                             </div>
-
-                            <input
-                                id="broj_gostiju"
-                                name="broj_gostiju"
-                                placeholder="Broj gostiju"
-                                type="integer"
-                                v-model="form.broj_gostiju"
-                                class="form-control"
-                                :class="
-                                    hasError('broj_gostiju') ? 'is-invalid' : ''
-                                "
-                            />
-                            <div
-                                v-if="hasError('broj_gostiju')"
-                                class="invalid-feedback"
-                            >
-                                {{ getError("broj_gostiju") }}
+                            <div class="mb-5">
+                                <input
+                                    id="broj_gostiju"
+                                    name="broj_gostiju"
+                                    placeholder="Broj gostiju"
+                                    type="integer"
+                                    v-model="form.broj_gostiju"
+                                    class="form-control"
+                                    :class="
+                                        hasError('broj_gostiju')
+                                            ? 'is-invalid'
+                                            : ''
+                                    "
+                                />
+                                <div
+                                    v-if="hasError('broj_gostiju')"
+                                    class="invalid-feedback"
+                                >
+                                    {{ getError("broj_gostiju") }}
+                                </div>
                             </div>
-
-                            <v-autocomplete
-                                @change="clearError"
-                                id="stol_id"
-                                label="Stol"
-                                v-model="form.stol_id"
-                                :items="stolovi"
-                                item-text="naziv"
-                                item-value="id"
-                                class="form-control"
-                                :class="hasError('stol_id') ? 'is-invalid' : ''"
-                            ></v-autocomplete>
-                            <div
-                                v-if="hasError('stol_id')"
-                                class="invalid-feedback"
-                            >
-                                {{ getError("stol_id") }}
+                            <div class="mb-5">
+                                <v-autocomplete
+                                    @change="clearError"
+                                    id="stol_id"
+                                    label="Stol"
+                                    v-model="form.stol_id"
+                                    :items="stolovi"
+                                    item-text="naziv"
+                                    item-value="id"
+                                    class="form-control"
+                                    :class="
+                                        hasError('stol_id') ? 'is-invalid' : ''
+                                    "
+                                ></v-autocomplete>
+                                <div
+                                    v-if="hasError('stol_id')"
+                                    class="invalid-feedback"
+                                >
+                                    {{ getError("stol_id") }}
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -220,20 +252,13 @@
                         <v-alert v-if="rezervacijaSpremljena" type="success"
                             >Rezervacija uspješno uređena!</v-alert
                         >
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal"
+                        <v-btn depressed color="error" data-bs-dismiss="modal">
+                            ZATVORI
+                        </v-btn>
+
+                        <v-btn @click="spremiRezervaciju()" color="primary"
+                            >SPREMI</v-btn
                         >
-                            Zatvori
-                        </button>
-                        <button
-                            @click="spremiRezervaciju()"
-                            type="button"
-                            class="btn btn-primary"
-                        >
-                            Spremi
-                        </button>
                     </div>
                 </div>
             </div>
@@ -304,6 +329,9 @@ export default {
                 broj_gostiju: rezervacija.broj_gostiju,
                 stol_id: rezervacija.stol_id,
             };
+        },
+        dodajRezervaciju() {
+            window.location = "http://127.0.0.1:8000/admin/rezervacije/dodaj";
         },
         spremiRezervaciju() {
             axios

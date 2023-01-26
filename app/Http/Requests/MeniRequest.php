@@ -26,7 +26,7 @@ class MeniRequest extends FormRequest
         return [
             'naziv' => 'required|string|max:100',
             'opis' => 'required|string|max:100',
-            'slika' => 'required|mimes:jpeg,png,jpg,svg',
+            'slika' => 'required',
             'cijena' => 'required|numeric',
 
         ];

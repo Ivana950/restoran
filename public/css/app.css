@@ -53,7 +53,7 @@
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
   --bs-body-font-family: var(--bs-font-sans-serif);
-  --bs-body-font-size: 1rem;
+  --bs-body-font-size: 0.9rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.6;
   --bs-body-color: #212529;
@@ -3747,7 +3747,6 @@ textarea.form-control-lg {
   align-items: center;
   justify-content: space-between;
   padding: var(--bs-navbar-padding-y) var(--bs-navbar-padding-x);
-  box-shadow: 2px 2px 5px #d9d0d0;
 }
 .navbar > .container,
 .navbar > .container-fluid,
@@ -10821,4 +10820,65 @@ textarea.form-control-lg {
   .d-print-none {
     display: none !important;
   }
+}
+:root {
+  --bs-nav-link-font-size:1rem;
+  --bs-nav-link-font-weight: ;
+}
+
+.navbar {
+  box-shadow: 2px 2px 5px #d9d0d0;
+}
+
+.nav-link {
+  --bs-nav-link-font-weight: 500;
+  font-size: 14px;
+}
+
+.main-sidebar {
+  height: 100%;
+  background-color: #F0F8FF;
+}
+
+.aside-nav-item {
+  padding-left: 10px;
+  border-bottom: 1px solid rgb(213, 212, 212);
+}
+
+.aside-nav-item:hover {
+  background-color: #ECEFF1;
+}
+
+.card-body {
+  box-shadow: 2px 2px 5px #d9d0d0;
+  background-color: #f0f8ff;
+}
+
+.table {
+  padding: 10px;
+}
+
+td {
+  font-size: 14px;
+}
+
+th {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.v-chip {
+  font-size: 14px;
+  width: 95px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.v-btn {
+  font-size: 12px;
+}
+
+.rezervacija-pozadina {
+  background-image: url("https://wallpapers.com/images/featured/1fokm2reflo9iy5r.jpg");
 }
